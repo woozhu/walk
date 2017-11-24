@@ -1,28 +1,36 @@
-About Walk
+About Walk    关于Walk
 ==========
 
 Walk is a "Windows Application Library Kit" for the Go Programming Language.
 
+Walk是Go语言的一个windows应用程序库控件。
+
 Its primarily useful for Desktop GUI development, but there is some more stuff.
 
-Setup
+它主要是用来桌面界面开发，当然，还有更多的一些功能。
+
+Setup  安装
 =====
 
 Make sure you have a working Go installation.
 See [Getting Started](http://golang.org/doc/install.html)
 
-##### Note
+确保你已经安装了可以使用的Go软件。
+
+##### Note 注释
 `Go 1.7.x` doesn't work with walk anymore, Make sure you use `Go 1.8.x` or later.
+1.7版已经不被支持了，你需要安装1.8之后的版本。
 
-##### To Install
+##### To Install 安装walk
 Now run `go get github.com/lxn/walk`
+打开cmd输入“go get github.com/lxn/walk”
 
-Using Walk
+Using Walk 使用walk
 ==========
 
 The preferred way to create GUIs with Walk is to use its declarative sub package,
 as illustrated in this small example:
-
+用walk来创建桌面应用界面，先引用它的子包declarative，像下面的例子一样。
 ##### `test.go`
 
 ```go
@@ -59,7 +67,7 @@ func main() {
 }
 ```
 
-##### Create Manifest `test.manifest`
+##### Create Manifest `test.manifest` 创建Manifest文件“test.manifest”
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -80,17 +88,17 @@ Then either compile the manifest using the [rsrc tool](https://github.com/akavel
 
 or rename the `test.manifest` file to `test.exe.manifest` and distribute it with the application instead.
 
-##### Build app
+##### Build app 编译程序
 
 In the directory containing `test.go` run
-
+在test.go的当前目录进行
 	go build
 	
 To get rid of the cmd window, instead run
-
+去掉cmd窗口，你这样编译
 	go build -ldflags="-H windowsgui"
 
-##### Run app
+##### Run app 运行程序
 	
 	test.exe
 	
@@ -98,7 +106,7 @@ To get rid of the cmd window, instead run
 
 ![alt tag](http://i.imgur.com/lUrgE2Q.png)
 
-##### More Examples
+##### More Examples 更多的例子
 There are some [examples](examples) that should get you started.
 
 Application Manifest Files
