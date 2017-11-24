@@ -13,7 +13,9 @@ import (
 import (
 	"github.com/lxn/win"
 )
-
+//Grid容器是widget容器的子容器，里面可以放置控件。Grid容器有Rows和Colums属性，只能有一个大于0，用来设置行数和列数，然后控件中用对应的Rowspan和ColumSpan
+//来设置所跨的行或者列。用来定位。
+//Grid容器有marginzero：true可以设置离外面容器的距离为零。
 type gridLayoutCell struct {
 	row    int
 	column int
@@ -32,7 +34,7 @@ type gridLayoutWidgetInfo struct {
 	minSize     Size
 	minSizeHint Size
 }
-
+//spacing是各个grid里面控件的间距。
 type GridLayout struct {
 	container            Container
 	margins              Margins
@@ -357,7 +359,7 @@ func (l *GridLayout) LayoutFlags() LayoutFlags {
 
 	return flags
 }
-
+//MinSize是最小尺寸。用来限制grid容器的最小尺寸。
 func (l *GridLayout) MinSize() Size {
 	if l.container == nil || len(l.cells) == 0 {
 		return Size{}
