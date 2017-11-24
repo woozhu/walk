@@ -4,28 +4,29 @@
 
 // +build windows
 
+//包名 walk
 package walk
-
+//引用
 import (
 	"syscall"
 	"unsafe"
 )
-
+//引用
 import (
 	"github.com/lxn/win"
 )
-
+//结构 父类是widget，两个Event publisher ，一个字体颜色。
 type TextEdit struct {
 	WidgetBase
 	readOnlyChangedPublisher EventPublisher
 	textChangedPublisher     EventPublisher
 	textColor                Color
 }
-
+//由父类容器传来创建 返回TextEdit的实例。
 func NewTextEdit(parent Container) (*TextEdit, error) {
 	return NewTextEditWithStyle(parent, 0)
 }
-
+//由父类容器传来创建，带格式，返回TextEdit实例。
 func NewTextEditWithStyle(parent Container, style uint32) (*TextEdit, error) {
 	te := new(TextEdit)
 
@@ -73,15 +74,15 @@ func (te *TextEdit) MinSizeHint() Size {
 func (te *TextEdit) SizeHint() Size {
 	return Size{100, 100}
 }
-
+//Text方法可得到内容。字符串。
 func (te *TextEdit) Text() string {
 	return windowText(te.hWnd)
 }
-
+//内容长度
 func (te *TextEdit) TextLength() int {
 	return int(te.SendMessage(win.WM_GETTEXTLENGTH, 0, 0))
 }
-
+//设置内容
 func (te *TextEdit) SetText(value string) (err error) {
 	if value == te.Text() {
 		return nil
@@ -91,7 +92,7 @@ func (te *TextEdit) SetText(value string) (err error) {
 	te.textChangedPublisher.Publish()
 	return
 }
-
+//对齐方式获得，可得到uint32的ID。
 func (te *TextEdit) Alignment() Alignment1D {
 	switch win.GetWindowLong(te.hWnd, win.GWL_STYLE) & (win.ES_LEFT | win.ES_CENTER | win.ES_RIGHT) {
 	case win.ES_CENTER:
@@ -103,7 +104,7 @@ func (te *TextEdit) Alignment() Alignment1D {
 
 	return AlignNear
 }
-
+//设置对齐方式，使用AlignCenter居中，AlignFar右对齐，默认是左对齐。
 func (te *TextEdit) SetAlignment(alignment Alignment1D) error {
 	var bit uint32
 
@@ -120,30 +121,30 @@ func (te *TextEdit) SetAlignment(alignment Alignment1D) error {
 
 	return te.ensureStyleBits(bit, true)
 }
-
+//最大长度
 func (te *TextEdit) MaxLength() int {
 	return int(te.SendMessage(win.EM_GETLIMITTEXT, 0, 0))
 }
-
+//设置对打允许长度。
 func (te *TextEdit) SetMaxLength(value int) {
 	te.SendMessage(win.EM_SETLIMITTEXT, uintptr(value), 0)
 }
-
+//内容选中
 func (te *TextEdit) TextSelection() (start, end int) {
 	te.SendMessage(win.EM_GETSEL, uintptr(unsafe.Pointer(&start)), uintptr(unsafe.Pointer(&end)))
 	return
 }
-
+//设置选中内容。
 func (te *TextEdit) SetTextSelection(start, end int) {
 	te.SendMessage(win.EM_SETSEL, uintptr(start), uintptr(end))
 }
-
+//替换选择内容。
 func (te *TextEdit) ReplaceSelectedText(text string, canUndo bool) {
 	te.SendMessage(win.EM_REPLACESEL,
 		uintptr(win.BoolToBOOL(canUndo)),
 		uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(text))))
 }
-
+//追加内容
 func (te *TextEdit) AppendText(value string) {
 	s, e := te.TextSelection()
 	l := te.TextLength()
@@ -151,11 +152,11 @@ func (te *TextEdit) AppendText(value string) {
 	te.ReplaceSelectedText(value, false)
 	te.SetTextSelection(s, e)
 }
-
+//只读属性
 func (te *TextEdit) ReadOnly() bool {
 	return te.hasStyleBits(win.ES_READONLY)
 }
-
+//设置只读属性
 func (te *TextEdit) SetReadOnly(readOnly bool) error {
 	if 0 == te.SendMessage(win.EM_SETREADONLY, uintptr(win.BoolToBOOL(readOnly)), 0) {
 		return newError("SendMessage(EM_SETREADONLY)")
@@ -165,21 +166,21 @@ func (te *TextEdit) SetReadOnly(readOnly bool) error {
 
 	return nil
 }
-
+//文字更新事件。
 func (te *TextEdit) TextChanged() *Event {
 	return te.textChangedPublisher.Event()
 }
-
+//文字颜色
 func (te *TextEdit) TextColor() Color {
 	return te.textColor
 }
-
+//设置文字颜色。
 func (te *TextEdit) SetTextColor(c Color) {
 	te.textColor = c
 
 	te.Invalidate()
 }
-
+//用他来实现绑定。
 func (te *TextEdit) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) uintptr {
 	switch msg {
 	case win.WM_COMMAND:
